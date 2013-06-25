@@ -85,6 +85,7 @@ sub import
         dist    => $args{basedir},
     });
 
+    my %done;
     for my $generator (sort { $a cmp $b } @{ $analyzer->mck()->generators() } )
     {
         next if $generator =~ /Unpack/;
@@ -100,6 +101,11 @@ sub import
             next unless $sub;
             $sub->( $analyzer->d(), $indicator );
         }
+    }
+
+    for my $name (sort keys %run_tests) {
+        next if $done{ $name };
+        $Test->skip("$name is removed");
     }
 }
 
